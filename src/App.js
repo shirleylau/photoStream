@@ -7,33 +7,38 @@ class App extends Component {
     this.state = {
       photos: [],
       timeUpper: null,
-      timeLower: null
-    }
+      timeLower: null,
+      gettingPhotos: false
+    };
     this.onScroll = this.onScroll.bind(this);
-    this.getImages = this.getImages.bind(this);
+    this.getPhotos = this.getPhotos.bind(this);
   }
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll);
-    this.getImages();
+    this.getPhotos();
   }
   componentWillUnmount() {
     window.removeEventListener('scroll', this.onScroll);
   }
   onScroll() {
-    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 800)) {
-      this.getImages();
+    const { gettingPhotos } = this.state;
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 600) && !gettingPhotos) {
+      this.setState({ gettingPhotos: true });
+      this.getPhotos();
+
     }
   }
-  getImages() {
-      const { photos, timeLower } = this.state;
+  getPhotos() {
+      const { photos, timeLower, gettingPhotos } = this.state;
       const oAuthConsumerKey = 'uwIah6pG7Khlh3CLfqYlXlEVVJ5bWwskaaiEoBGzDbyJ7q3GzN';
-      let api = `https://api.tumblr.com/v2/tagged?tag=gif&limit=30&api_key=${oAuthConsumerKey}`;
+      const tag = 'gif';
+      let api = `https://api.tumblr.com/v2/tagged?tag=${tag}&limit=30&api_key=${oAuthConsumerKey}`;
       if (timeLower) {
         api += `&before=${timeLower}`;
       }
-
       axios.get(api)
         .then(response => {
+          this.setState({ gettingPhotos: false });
           if (response && response.data && response.data.response) {
             const newPhotos = response.data.response
               .filter(post => post.type === 'photo')
@@ -56,7 +61,7 @@ class App extends Component {
     let { photos } = this.state;
     return (
       <div className="App">
-        <div><h1>Im App</h1></div>
+        <div><h1>#gif</h1></div>
         <PhotoFeed photos={photos} />
       </div>
     );
@@ -83,9 +88,9 @@ class PhotoCard extends Component {
     const { img, post, summary } = this.props;
     return(
       <div className="photo-card">
-        <a href={post}>
+        <a href={post} target="_blank">
           <div>{summary}</div>
-          <img src={img} target="_blank"></img>
+          <img src={img}></img>
         </a>
       </div>
     )

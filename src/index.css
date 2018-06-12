@@ -4,7 +4,6 @@ body {
   font-family: 'Fjalla One', sans-serif;
   background-color: #2f343e;
   color: #fff;
-  font-family: sans-serif;
 }
 
 .photo-feed {
@@ -23,11 +22,15 @@ body {
 }
 
 .photo-card a div {
+  text-overflow: ellipsis;
   width: 100%;
   height: 100%;
-  font-size: 18px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
   opacity: 0;
   text-align: center;
+  justify-content: center;
   position: absolute;
   color: #fff;
   z-index: 1;
